@@ -1,200 +1,180 @@
-# Online Shop 🛍️ for Hackathon Phase 1
-[![Stars](https://img.shields.io/github/stars/iemafzalhassan/online_shop)](https://github.com/iemafzalhassan/online_shop)
-![Forks](https://img.shields.io/github/forks/iemafzalhassan/online_shop)
-![GitHub last commit](https://img.shields.io/github/last-commit/iemafzalhassan/easyshop?color=red)
-[![GitHub Profile](https://img.shields.io/badge/GitHub-iemafzalhassan-blue?logo=github&style=flat)](https://github.com/iemafzalhassan)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-<p align="center">
+![img](https://github.com/Yash2526/online_shop/blob/feature/dockerize-application/Online%20Shop.png)
 
-Welcome to the **Online Shop** project – our hackathon entry for Phase 1! This repository contains a fully functional e-commerce application built to demonstrate foundational DevOps skills in three key areas:
-- **Git & GitHub**
-- **Linux**
-- **Docker**
+# **️🐳 Dockerized  Online Sho️p🛍️ Application**
 
-In this phase, your focus is on understanding the provided developer code, reviewing how these core topics are implemented, and making any necessary enhancements. When you're ready, you'll submit your work via our designated Google Form.
+This repository contains a Dockerized Node.js application with a **multi-stage build**. Below, we provide a detailed step-by-step explanation of the `Dockerfile` used in this project.
 
 ---
 
-## Important Dates
-
-- **Hackathon Start Date:** 20th Feb, 9:00 AM
-- **Hackathon End Date:** 21st Feb, 9:00 AM
-- **Submission Deadline:** 24 hours after the repository link is shared
-
----
-
-## Table of Contents
-- [Important Dates](#important-dates)
-- [Overview](#overview)
-- [Guidelines & Resources](#guidelines--resources)
-- [Tasks](#tasks)
-- [Submission Instructions](#submission-instructions)
-- [Submission Details for Your Repo README](#submission-details-for-your-repo-readme)
-- [Evaluation Criteria](#evaluation-criteria)
-- [License](#license)
-- [Contact](#contact)
-
-
+## **🚀 What This Dockerfile Does**
+- Uses **multi-stage builds** to separate **development** and **production** environments.
+- Uses a **lightweight Alpine-based Node.js image** to reduce image size.
+- **Installs dependencies** and **copies only necessary files** for an optimized production build.
+- **Exposes the application on port 3000**.
+- Uses `CMD` to run the application in **development mode** with `--host` and `--port` options.
 
 ---
 
-## Overview
+## **📝 Step-by-Step Explanation of Dockerfile**
 
-The **Online Shop** project is a demo e-commerce application designed for Hackathon Phase 1. It serves as a platform to showcase best practices in code quality, development workflows, and system design with a focus on:
+### **🔹 Stage 1: Build Stage**
+This stage is responsible for setting up the **development environment** and installing dependencies.
 
-- **Git & GitHub:** Effective version control, branching strategies, and collaborative workflows.
-- **Linux:** Command-line operations, system administration, and file management.
-- **Docker:** Principles of containerization and preparing code for deployment in a containerized environment.
+```dockerfile
+# 1️⃣ Use Node.js Alpine as a base image for the build stage
+FROM node:23-alpine AS build-stage
+```
+- This pulls the **latest Node.js 23 Alpine image**, which is lightweight and optimized.
+- We name this stage `build-stage` so it can be referred to in the next stage.
 
-Your task is to familiarize yourself with the code, make enhancements if necessary, and ensure your final submission reflects your understanding of these topics.
+```dockerfile
+# 2️⃣ Set the working directory inside the container
+WORKDIR /app
+```
+- All subsequent commands will be executed inside the `/app` directory.
 
----
+```dockerfile
+# 3️⃣ Copy package.json and package-lock.json to install dependencies
+COPY package*.json ./
+```
+- Copies `package.json` and `package-lock.json` to ensure we only install required dependencies.
 
-## Guidelines & Resources
+```dockerfile
+# 4️⃣ Install application dependencies
+RUN npm install
+```
+- Runs `npm install` to install all the required dependencies.
+- Uses the **cached layers** feature of Docker to avoid re-installing dependencies when the code changes.
 
-Before diving into the tasks, please review the following key resources:
+```dockerfile
+# 5️⃣ Copy the entire project to the container
+COPY . .
+```
+- Copies the **entire project directory** (except `.dockerignore` files) into the container.
 
-- [CONTRIBUTING.md](CONTRIBUTING.md): Guidelines for code contributions, commit messages, and overall coding standards.
-- [ROADMAP.md](ROADMAP.md): Insights into the project vision, future enhancements, and milestones.
-- **Repository Documentation:** Explore the repository to understand how the application is built. Pay special attention to the `src` directory where the main application logic resides, as well as configuration files such as `vite.config.js` and styling in `index.css`.
-
-These documents provide the context needed to understand the project requirements and the best practices expected for your contributions.
-
----
-
-## Tasks
-
-For this hackathon phase, your work will center around the following tasks:
-
-### Git & GitHub
-
-- **Repository Management:** Fork and clone the repository, then create a new branch for your work. Ensure your commit history is clean and well-documented.
-- **Collaboration Practices:** Follow best practices for version control by making descriptive commits, creating pull requests, and engaging in code reviews.
-- **Workflow Optimization:** Identify any areas where the Git workflow can be improved and document your suggestions for future enhancements.
-
-### Linux
-
-- **Command Line Proficiency:** Review the code for examples of Linux command usage. Test and verify that file operations, system scripts, and environment configurations are functioning as expected.
-- **System Administration:** Examine how the application handles Linux-based operations such as permissions, file management, and process monitoring. If you see room for improvement, implement those changes and document them.
-- **Documentation:** Clearly document any Linux-related enhancements you make, explaining how they optimize the project’s performance or usability.
-
-### Docker
-
-- **Containerization Principles:** Even though a Dockerfile is not provided in this repository, consider how you would package and deploy this application using Docker. Reflect on the design decisions that would facilitate containerization.
-- **Conceptual Improvements:** Propose any modifications or improvements that could make future Docker integration smoother. Document your suggestions clearly in your pull request.
-- **Code Readiness:** Ensure the codebase is structured in a way that aligns with Docker best practices, preparing it for eventual containerized deployment on AWS EC2 / Azure VM / Google Compute Engine (Your Choice of Cloud).
-
----
-> [!IMPORTANT]
-> ## Submission Instructions
-> 
-> When you have completed your work, please follow these steps for submission:
->
-> 1. **Review & Test Your Work:**
->    
->    - Make sure all changes are committed and pushed to your GitHub repository (or branch). Test the application thoroughly to confirm that your enhancements do not break existing functionality.
->    
-> 2. **Prepare Your Submission:**
->    
->    -  Gather your full name, email address, and the URL to your GitHub repository (or the specific branch/commit that contains your work).
->    -  Make sure to add Demo video(which should be publically accessible) explaining your implementations for the project. This is the important aspect for evaluation. The Videos / Articles / Submissions should be submitted to the google form as well as shared on your LinkedIn/ twitter for extra points.
->    
-> 3. **Submit via Google Form:**
->    
->    - Complete the submission form here:
->    
->    [Submit Your Work](https://docs.google.com/forms/d/e/1FAIpQLSdtOttzC9M__5ysJ_prVT1MtmV0qh1_PXrI5aYfd3zQNCF-CA/viewform?usp=header)
->    
-> 4. **Timely Submission:**
->    
->    - Ensure that your submission is completed before the hackathon deadline. Late submissions will not be eligible for prizes.
->    
+```dockerfile
+# 6️⃣ Build the application (if needed)
+RUN npm run build
+```
+- This step is only required **if your application requires a build step**.
+- If it's a simple Node.js backend, you can remove this step.
 
 ---
 
-## Submission Details for Your Repo README
+### **🔹 Stage 2: Production Stage**
+This stage is responsible for creating a lightweight **production-ready container**.
 
-When submitting your repository link, your README must include:
+```dockerfile
+# 7️⃣ Use a smaller Node.js image for production
+FROM node:lts-alpine AS production
+```
+- Uses a **lightweight Node.js LTS Alpine image** to optimize performance.
+- Keeps only the essential files for production.
 
-- **Project Title & Overview:**
-    
-    Clearly state the project name (e.g., "Online Shop – Hackathon Phase 1 Submission") and provide a brief overview of your solution, emphasizing how it addresses Git & GitHub, Linux, and Docker.
-    
-- **Task Descriptions & Implementations:**
-    
-  -  Describe the tasks you worked on. Detail how you managed your repository, the Linux commands or scripts you used, and any improvements or suggestions regarding Docker integration.
+```dockerfile
+# 8️⃣ Set the working directory for the production environment
+WORKDIR /app/phase1_hackathon
+```
+- All files will be placed inside `/app/phase1_hackathon` for better organization.
 
-> [!NOTE]
->
->  -  Provide video demo link (3-5 minutes only, not more than 5 minutes)
+```dockerfile
+# 9️⃣ Copy only necessary build files from the build-stage
+COPY --from=build-stage /app /app/phase1_hackathon
+```
+- Copies only the required files from `build-stage` to the `production` stage.
+- Ensures that unnecessary files (such as `node_modules`) do not get copied.
 
-- **Key Changes & Enhancements:**
-    
-    Highlight the major changes or enhancements you made, including any refactoring, feature additions, or optimizations, along with documentation updates.
-    
-- **Final Submission Statement:**
-    
-    Include a clear declaration that this repository (or branch) represents your final submission for Hackathon Phase 1.
-    
-- **Version or Branch Information:**
-    
-    Specify which branch or commit should be reviewed (e.g., "Final submission branch: `final-phase1`").
-    
+```dockerfile
+# 🔟 Set an environment variable for the port
+ENV PORT=3000
+```
+- Defines an environment variable `PORT=3000` for flexibility.
 
-Make sure this information is visible in your repository's README so that evaluators can easily review your work.
+```dockerfile
+# 1️⃣1️⃣ Expose port 3000 to allow external access
+EXPOSE 3000
+```
+- Opens **port 3000**, allowing external traffic to reach the container.
 
----
-
-## Evaluation Criteria
-
-Submissions will be evaluated based on the following criteria:
-
-- **Adherence to Guidelines:**
-    
-    Your work should comply with the project’s coding standards, documentation, and contribution guidelines as described in this README and the [CONTRIBUTING.md](http://contributing.md/) file.
-    
-- **Git & GitHub Proficiency:**
-    
-    Evaluation of your version control practices, including branching strategy, commit quality, and pull request process.
-    
-- **Linux Competence:**
-    
-    Demonstrated ability to effectively use Linux for system administration tasks, scripting, and command-line operations within the project.
-    
-- **Docker Readiness:**
-    
-    Although a Dockerfile is not provided, your documentation and code structure should reflect an understanding of containerization best practices and readiness for future Docker integration.
-    
-- **Quality of Enhancements:**
-    
-    The significance and quality of your improvements, refactoring, and overall impact on the project’s functionality.
-    
-- **Documentation & Clarity:**
-    
-    Clear and concise documentation that explains your work, including details in your repository README about your tasks and changes.
-    
-- **Timeliness:**
-    
-    Your submission must be completed and submitted before the hackathon deadline.
-    
+```dockerfile
+# 1️⃣2️⃣ Start the application
+CMD ["npm", "run", "dev", "--", "--host", "--port", "3000"]
+```
+- The application runs in **development mode** (`npm run dev`).
+- **Flags Explanation:**
+  - `--` **(double dashes)**: Passes arguments to the npm script.
+  - `--host`: Ensures the app is accessible outside the container.
+  - `--port 3000`: Explicitly sets the app to run on port 3000.
 
 ---
 
-## License
+## **📌 Running the Container**
 
-This project is licensed under the MIT License. See the [MIT](LICENSE) file for details.
+### **1️⃣ Build the Docker Image**
+```sh
+docker build -t online_shop-app:latest .
+```
+
+### **2️⃣ Run the Container**
+```sh
+docker run -d -p 3000:3000 online_shop-app:latest
+```
+
+### **3️⃣ Access the Application**
+- Open your browser and go to:  
+  **http://localhost:3000**
 
 ---
 
-## Contact
-
-For any questions or further information, please contact:
-
-- **Email:** [iemafzalhassan@gmail.com](mailto:iemafzalhassan@gmail.com) , [amitabhdevops2024@gmail.com](mailto:iemafzalhassan@gmail.com) , [deveshagent@gmail.com](mailto:deveshagent@gmail.com)
-- [Join Discord Server](https://discord.gg/4JtuMhMcjn)
+## **🚀 Advantages of This Multi-Stage Build**
+✅ **Reduces Image Size** (removes unnecessary files).  
+✅ **Optimizes Production Deployment** (only copies necessary files).  
+✅ **Uses a Lightweight Alpine Image** (reduces memory usage).  
+✅ **Ensures Development & Production Environments are Separated**.  
 
 ---
 
-Good luck for the hackathon
+## **🔧 Troubleshooting**
 
-Happy Learning :)
+### **🔴 ERROR: load metadata for docker.io/library/node:23-alpine3.20**
+- This happens when the image **does not exist**.
+- **Fix:** Use `node:23-alpine` instead of `node:23-alpine3.20`.
+
+### **🔴 Application Not Running on localhost:3000?**
+- Check if the container is running:
+  ```sh
+  docker ps
+  ```
+- If not, restart the container:
+  ```sh
+  docker restart <container_id>
+  ```
+- Ensure port 3000 is correctly exposed:
+  ```sh
+  docker run -p 3000:3000 my-node-app
+  ```
+
+---
+## 📤 **Submission Details**
+
+- **Full Name:** Bharitkar Yash
+- **Email Address:** yashbharitkar2003@gmail.com
+- **GitHub Repo:** [GitHub Repository Link](https://github.com/Yash2526/online_shop)
+- **Demo Video:** [Watch Here](https://go.screenpal.com/watch/cTnYrPnhKpH)
+
+---
+
+## 📣 **Sharing for Extra Points 🚀**
+
+- **LinkedIn :** (https://www.linkedin.com/in/yashbharitkar25learns-cloud/)
+
+
+---
+
+## 📑 **License**
+
+MIT License © Amit Singh
+
+---
+
+💡 *Made with 💖 using React, Vite, and Docker.*
